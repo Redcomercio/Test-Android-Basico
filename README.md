@@ -1,5 +1,6 @@
 🧪 Test Android Básico
 
+-----------------------------------------------------------------------
 📖 Contexto
   
   Redcomercio está preparando una demo de app interna para equipos de terreno.
@@ -8,13 +9,16 @@
   Las lecturas deben quedar en un historial con la hora exacta, y el Home debe mostrar el total acumulado de lecturas realizadas.
   
   Queremos que mejores lo que haga falta y entregues los cambios mediante un Pull Request.
-
+  
+-----------------------------------------------------------------------
 🧩 Historia: Lectura de QR
 
   Queremos reemplazar el fragmento Dashboard por una pantalla que permita leer códigos QR y guardar las lecturas en un historial.
   Además, en el Home debe mostrarse el total de lecturas realizadas.
-
+  
+-----------------------------------------------------------------------
 🎯 Requerimientos
+
   🔹 Lectura de QR
   
     Cambiar el fragmento Dashboard por uno de Lectura de QR.
@@ -38,7 +42,7 @@
     Corregir cualquier error que encuentres.
   
     Dejar los cambios en un Pull Request hacia main.
-
+-----------------------------------------------------------------------
 ✅ Criterios de aceptación
 
   Puedo abrir la pantalla de Lectura y escanear un QR.
@@ -50,7 +54,8 @@
   El Home muestra el total actualizado de lecturas.
   
   La app no crashea y maneja correctamente los permisos de cámara.
-
+  
+-----------------------------------------------------------------------
 🧠 Entrega
 
   Crear branch: feature/qr-scan
