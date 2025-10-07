@@ -4,7 +4,7 @@
 📖 Contexto
   
   Redcomercio está preparando una demo de app interna para equipos de terreno.
-  Hoy el Dashboard muestra métricas básicas, pero necesitamos reemplazar su fragmento por una Lectura de QR que permita registrar visitas en terreno.
+  Hoy el Dashboard esta sin terminar, pero necesitamos reemplazar su fragmento por una Lectura de QR que permita registrar visitas en terreno.
   
   Las lecturas deben quedar en un historial con la hora exacta, y el Home debe mostrar el total acumulado de lecturas realizadas.
   
@@ -64,6 +64,6 @@
   
   Abrir un Pull Request con:
   
-  Breve descripción de los cambios.
+   - Breve descripción de los cambios.
   
-  Librería usada para escanear.
+   - Librería usada para escanear.
