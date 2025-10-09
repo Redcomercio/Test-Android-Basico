@@ -4,37 +4,40 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
+import androidx.recyclerview.widget.RecyclerView;
+import com.orsanredcomercio.testandroidredcomercio.R;
+import com.orsanredcomercio.testandroidredcomercio.data.entity.QrScan;
 import com.orsanredcomercio.testandroidredcomercio.databinding.FragmentHistoryBinding;
+import com.orsanredcomercio.testandroidredcomercio.ui.history.HistoryViewModel;
+import com.orsanredcomercio.testandroidredcomercio.ui.history.ScanAdapter;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class HistoryFragment extends Fragment {
-
     private FragmentHistoryBinding binding;
+    private RecyclerView recyclerView;
+    private ScanAdapter adapter;
+    private HistoryViewModel historyViewModel;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        // Example data
-        List<String> historyItems = Arrays.asList("Transaction 1", "Transaction 2", "Transaction 3");
-
-        // Set up adapter
-        HistoryAdapter adapter = new HistoryAdapter(historyItems);
-        binding.historyRecyclerView.setAdapter(adapter);
-        binding.historyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        recyclerView = binding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        // Observe LiveData<List<QrScan>> del ViewModel (sin formateo — Adapter maneja bind)
+        historyViewModel.getAllScans().observe(getViewLifecycleOwner(), scans -> {
+            if (adapter == null) {
+                adapter = new ScanAdapter(scans);
+                recyclerView.setAdapter(adapter);
+            } else {
+                adapter.updateScans(scans);
+            }
+        });
         return root;
     }
 

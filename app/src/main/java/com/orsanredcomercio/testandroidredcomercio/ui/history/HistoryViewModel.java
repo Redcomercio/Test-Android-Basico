@@ -1,19 +1,24 @@
 package com.orsanredcomercio.testandroidredcomercio.ui.history;
 
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import com.orsanredcomercio.testandroidredcomercio.data.dao.QrScanDao;
+import com.orsanredcomercio.testandroidredcomercio.data.database.AppDatabase;
+import com.orsanredcomercio.testandroidredcomercio.data.entity.QrScan;
 
-public class HistoryViewModel extends ViewModel {
+import java.util.List;
 
-    private final MutableLiveData<String> mText;
+public class HistoryViewModel extends AndroidViewModel {
+    private final LiveData<List<QrScan>> allScans;
 
-    public HistoryViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+    public HistoryViewModel(@NonNull Application application) {
+        super(application);
+        allScans = AppDatabase.getDatabase(application).qrScanDao().getAllScans();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<List<QrScan>> getAllScans() {
+        return allScans;
     }
 }
