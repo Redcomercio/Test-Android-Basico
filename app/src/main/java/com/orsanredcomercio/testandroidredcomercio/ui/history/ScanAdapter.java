@@ -1,29 +1,43 @@
+/**
+ * Clase Adapter para RecyclerView.
+ * Mejora HistoryAdapter maneja List<QrScan> (la entidad completa de la BD)
+ * en lugar de strings simples, permitiendo mostrar detalles como contenido
+ * del QR y hora formateada.
+ * Fix 5: Migrado a ListAdapter con DiffUtil para actualizaciones eficientes (solo diffs se animan/actualizan).
+ */
 package com.orsanredcomercio.testandroidredcomercio.ui.history;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;  // Fix 5: Nuevo import para ListAdapter
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.orsanredcomercio.testandroidredcomercio.R;
 import com.orsanredcomercio.testandroidredcomercio.data.entity.QrScan;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;  // Fix 5: Nuevo import para equals null-safe en DiffUtil
 
-public class ScanAdapter extends RecyclerView.Adapter<ScanAdapter.ViewHolder> {
-    private List<QrScan> scans;
+public class ScanAdapter extends ListAdapter<QrScan, ScanAdapter.ViewHolder> {  // Fix 5: Cambiado a ListAdapter<QrScan, ViewHolder>
 
-    public ScanAdapter(List<QrScan> scans) {
-        this.scans = scans != null ? scans : new ArrayList<>();
+    // Fix 5: Constructor vacío (ListAdapter maneja lista internamente; pasa DiffUtil)
+    public ScanAdapter() {
+        super(DIFF_CALLBACK);
     }
 
-    public void updateScans(List<QrScan> newScans) {
-        this.scans = newScans != null ? newScans : new ArrayList<>();
-        notifyDataSetChanged();
+    // Fix 5: Nuevo método submitList (reemplaza updateScans; maneja null como original)
+    // Uso: adapter.submitList(newScans); desde Fragment/ViewModel
+    public void submitList(List<QrScan> newScans) {
+        super.submitList(newScans != null ? newScans : new ArrayList<>());
     }
 
+    // Crea un ViewHolder para cada elemento de la lista (sin cambios)
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -31,27 +45,57 @@ public class ScanAdapter extends RecyclerView.Adapter<ScanAdapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
+    // Muestra el contenido de un elemento de la lista (Fix 5: Usa getItem() y bind())
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        QrScan scan = scans.get(position);  // Asume scans no null (por constructor/update)
-        if (scan != null) {
-            holder.contentText.setText("Contenido: " + scan.getContent());  // Usa getter estándar (no field directo)
-            holder.timeText.setText("Hora: " + scan.getFormattedTime());  // Requiere agregar este método en QrScan (ver abajo)
-        }
+        QrScan scan = getItem(position);  // Fix 5: getItem() de ListAdapter (eficiente, accede a current list)
+        holder.bind(scan);  // Fix 5: Llama bind para encapsular lógica (mantiene tu código)
     }
 
+    // Retorna la cantidad de elementos de la lista (Fix 5: Usa getCurrentList())
     @Override
     public int getItemCount() {
-        return scans != null ? scans.size() : 0;
+        return getCurrentList().size();  // Fix 5: Automático y null-safe
     }
 
+    // Fix 5: Removido updateScans (ya no necesario; usa submitList arriba)
+    // Fix 5: Removido private List<QrScan> scans; (ListAdapter lo maneja internamente)
+
+    // Fix 5: DiffUtil para comparar QrScan (calcula diffs eficientes por ID y contenido)
+    private static final DiffUtil.ItemCallback<QrScan> DIFF_CALLBACK = new DiffUtil.ItemCallback<QrScan>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull QrScan oldItem, @NonNull QrScan newItem) {
+            // Items iguales si tienen el mismo ID (único en BD, auto-increment)
+            return oldItem.getId() == newItem.getId();  // Asume QrScan tiene long getId()
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull QrScan oldItem, @NonNull QrScan newItem) {
+            // Contenidos iguales si campos clave coinciden (content y formattedTime)
+            return Objects.equals(oldItem.getContent(), newItem.getContent()) &&  // Content del QR
+                    Objects.equals(oldItem.getFormattedTime(), newItem.getFormattedTime());  // Hora formateada
+            // Opcional: Si QrScan overridea equals(), usa return oldItem.equals(newItem);
+        }
+    };
+
+    // Clase interna para almacenar los elementos de la lista (sin cambios mayores)
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView contentText, timeText;
 
-        public ViewHolder(@NonNull View itemView) {  // ¡Fix: Agrega @NonNull para compliance
+        // Constructor ViewHolder (sin cambios; ya tiene @NonNull implícito)
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             contentText = itemView.findViewById(R.id.content_text);  // Resuelve con XML
             timeText = itemView.findViewById(R.id.time_text);  // Resuelve con XML
         }
+
+        // Fix 5: Nuevo método bind (encapsula tu lógica de onBindViewHolder; chequea null)
+        public void bind(QrScan scan) {
+            if (scan != null) {
+                contentText.setText("Contenido: " + scan.getContent());  // Usa getter estándar (sin cambios)
+                timeText.setText("Hora: " + scan.getFormattedTime());  // Requiere agregar este método en QrScan (ver nota)
+            }
+        }
     }
 }
+
