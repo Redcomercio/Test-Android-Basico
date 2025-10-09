@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.orsanredcomercio.testandroidredcomercio.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
-
-    private final List<String> items;
+    private List<String> items;
 
     public HistoryAdapter(List<String> items) {
-        this.items = items;
+        this.items = items != null ? items : new ArrayList<>();
     }
 
     @NonNull
@@ -38,8 +38,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return items.size();
     }
 
+    public void updateScans(List<String> newItems) {
+        this.items = newItems != null ? newItems : new ArrayList<>();  // Actualiza lista; maneja null
+        notifyDataSetChanged();  // Refresca RecyclerView (simple y eficiente para listas pequeñas)
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView itemText;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemText = itemView.findViewById(R.id.itemText);
