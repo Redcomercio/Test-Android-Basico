@@ -16,11 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.OptIn;
-import androidx.camera.core.CameraSelector;
-import androidx.camera.core.ExperimentalGetImage;
-import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageProxy;
-import androidx.camera.core.Preview;
+import androidx.camera.core.*;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
@@ -31,17 +27,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
-import com.orsanredcomercio.testandroidredcomercio.R;
-import com.orsanredcomercio.testandroidredcomercio.data.database.AppDatabase;
 import com.orsanredcomercio.testandroidredcomercio.data.entity.QrScan;
 import com.orsanredcomercio.testandroidredcomercio.databinding.FragmentQrScanBinding;
-import com.orsanredcomercio.testandroidredcomercio.ui.dashboard.QrScanViewModel;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.orsanredcomercio.testandroidredcomercio.ui.history.ScanAdapter;
-
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class QrScanFragment extends Fragment {
@@ -50,24 +38,19 @@ public class QrScanFragment extends Fragment {
     private Button scanButton;
     private static final int REQUEST_CAMERA_PERMISSION = 10;
     private ProcessCameraProvider cameraProvider;
-    private boolean isScanning = false;  // Toggle para start/stop
-    private RecyclerView scanRecyclerView;
-    private ScanAdapter scanAdapter;
+    private boolean isScanning = false;
+    private QrScanViewModel qrScanViewModel;  // Nueva: Para insert y texto
 
     // Método que configura UI, botón toggle y permisos
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentQrScanBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        // ViewModel (crea QrScanViewModel si no existe; o remueve si no necesitas)
-        QrScanViewModel qrScanViewModel = new ViewModelProvider(this).get(QrScanViewModel.class);
-        final TextView textView = binding.textQr;  // Cambia a ID correcto en layout (no textDashboard)
+        qrScanViewModel = new ViewModelProvider(this).get(QrScanViewModel.class);
+        final TextView textView = binding.textQr;
         qrScanViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
-        previewView = binding.previewView;
+        previewView = binding.previewView;  // Binding maneja snake_case -> camelCase
         scanButton = binding.scanButton;
-
         scanButton.setOnClickListener(v -> {
             if (isScanning) {
                 stopScan();
@@ -75,31 +58,23 @@ public class QrScanFragment extends Fragment {
                 startScan();
             }
         });
+
         if (allPermissionsGranted()) {
             startCamera();
         } else {
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
         }
-
-        // Setup RecyclerView para escaneos (opcional: Integra ScanAdapter) - AGREGADO AQUÍ (después de botón y permisos)
-        scanRecyclerView = binding.scanRecyclerView;  // Asume ID agregado al XML (ej. debajo de scanButton)
-        scanRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        scanAdapter = new ScanAdapter();  // Fix 5: Constructor vacío
-        scanRecyclerView.setAdapter(scanAdapter);
-
-        // Observe allScans del ViewModel (asumiendo QrScanViewModel tiene getAllScans() como en fixes previos)
-        qrScanViewModel.getAllScans().observe(getViewLifecycleOwner(), scans -> {
-            scanAdapter.submitList(scans);  // Fix 5: Actualiza eficientemente después de save
-        });
-
-        return root;  // Tipo de retorno corregido
+        // Removido: Todo el setup de scanRecyclerView, ScanAdapter, y observer getAllScans() (redundancia con History)
+        return root;
     }
+
     // Verifica permisos antes de usar la camara
     private boolean allPermissionsGranted() {
         return ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
+
     // Método que inicia la camara
     private void startCamera() {
         ListenableFuture<ProcessCameraProvider>
@@ -116,6 +91,7 @@ public class QrScanFragment extends Fragment {
             }
         }, ContextCompat.getMainExecutor(requireContext()));
     }
+
     // Método que muestra el preview en pantalla y analiza frames en tiempo real para detectar QR
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void bindCameraUseCases() {
@@ -136,6 +112,7 @@ public class QrScanFragment extends Fragment {
         cameraProvider.unbindAll();
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
     }
+
     // Convierte los frames de la camara en imágenes y analiza QR
     @SuppressLint("ExperimentalGetImage")
     @ExperimentalGetImage  // Fix para warning experimental (opt-in requerido)
@@ -172,21 +149,15 @@ public class QrScanFragment extends Fragment {
                 .addOnCompleteListener(
                         release -> imageProxy.close());
     }
+
     // Guarda el contenido del QR en la BD
+    // saveScan refactorizado: Usa ViewModel para insert asíncrono (integra Repository, elimina threading duplicado)
     private void saveScan(String content) {
-        new Thread(() -> {
-            try {
-                AppDatabase.getDatabase
-                        (requireContext().getApplicationContext()).qrScanDao().insert(new QrScan(content));
-            } catch (Exception e) {
-                // Fix 3: Agrega Toast en UI thread para error de guardado (ej. BD falla)
-                requireActivity().runOnUiThread(() ->
-                        Toast.makeText(requireContext(), "Error guardando QR: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-                e.printStackTrace();
-            }
-        }).start();
+        qrScanViewModel.insert(new QrScan(content));  // + LLAMA: ViewModel maneja async y errores
+        Toast.makeText(requireContext(), "QR escaneado y guardado: " + content, Toast.LENGTH_LONG).show();
+        stopScan();
     }
+
     // Controlan el flujo: start rebindea para reanudar análisis, stop libera cámara
     private void startScan() {
         if (cameraProvider != null && !isScanning) {
@@ -205,6 +176,7 @@ public class QrScanFragment extends Fragment {
             scanButton.setText("Iniciar Escaneo");
         }
     }
+
     // Método que responde al diálogo de permisos
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -218,6 +190,7 @@ public class QrScanFragment extends Fragment {
             }
         }
     }
+
     // Al salir del fragment libera recursos
     @Override
     public void onDestroyView() {

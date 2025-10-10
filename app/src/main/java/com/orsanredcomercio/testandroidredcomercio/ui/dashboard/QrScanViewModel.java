@@ -5,25 +5,33 @@
  */
 package com.orsanredcomercio.testandroidredcomercio.ui.dashboard;
 
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import com.orsanredcomercio.testandroidredcomercio.data.entity.QrScan;
+import com.orsanredcomercio.testandroidredcomercio.data.repository.QrScanRepository;
 
-import java.util.List;
-
-public class QrScanViewModel extends ViewModel { // Renombrado para más claridad
+public class QrScanViewModel extends AndroidViewModel { // Renombrado para más claridad
+    private final QrScanRepository repository;
     private final MutableLiveData<String> text = new MutableLiveData<>();
-    private MutableLiveData<List<QrScan>> allScans = new MutableLiveData<>();
+
     // Seteo de texto inicial
-    public QrScanViewModel() {
-        text.setValue("Escanea un QR para registrar la visita");  // Texto actualizado
+    public QrScanViewModel(@NonNull Application application) {
+        super(application);
+        repository = new QrScanRepository(application);
+        text.setValue("Escanea un QR para registrar la visita");
     }
-    public LiveData<List<QrScan>> getAllScans() {
-        return allScans;
-    }
-    // Observador de texto
+
+    // Puente para la UI
     public LiveData<String> getText() {
         return text;
+    }
+
+    // inserta un nuevo escaneo en Room
+    public void insert(QrScan qrScan) {
+        repository.insert(qrScan);
+        // Async via Repository; exceptions suben si needed (no hay manejo explícito aquí)
     }
 }
