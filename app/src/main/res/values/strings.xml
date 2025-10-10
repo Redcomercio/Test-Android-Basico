@@ -1,6 +1,29 @@
 <resources>
-    <string name="app_name">TestAndroidRedcomercio</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Historial</string>
+	<string name="app_name">TestAndroidRedcomercio</string>
+	<string name="title_home">Home</string>
+	<string name="title_dashboard">Escaneo QR</string>
+	<string name="title_notifications">Historial</string>
+
+	<string name="home_text">Total de visitas registradas</string>
+	<string name="total_scans_placeholder">Total escaneos: 0</string>
+	<string name="total_scans">Total escaneos: %d</string>
+	<string name="loading_scans">Cargando total de escaneos...</string>
+	<string name="no_scans">No hay escaneos aún. ¡Empieza a escanear!</string>
+
+	<string name="scan_title">Escanea un QR para registrar la visita</string>
+	<string name="start_scan">Iniciar Escaneo</string>
+	<string name="stop_scan">Detener Escaneo</string>
+	<string name="qr_scanned">QR escaneado y guardado: %s</string>
+	<string name="error_camera">Error iniciando cámara</string>
+	<string name="error_permission">Permiso de cámara requerido</string>
+	<string name="error_process">Error procesando imagen: %s</string>
+	<string name="error_save">Error guardando QR: %s</string>
+
+	<string name="history_title">Historial de Escaneos</string>
+	<string name="empty_history">No hay escaneos aún. ¡Empieza a escanear!</string>
+	<string name="qr_content">Contenido: %s</string>
+	<string name="qr_time">Hora: %s</string>
+
+	<string name="qr_content_placeholder">Contenido del QR</string>
+	<string name="qr_time_placeholder">Hora: 14:30</string>
 </resources>
