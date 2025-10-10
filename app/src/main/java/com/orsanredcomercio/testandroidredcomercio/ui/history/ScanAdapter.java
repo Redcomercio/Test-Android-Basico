@@ -11,18 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;  // Fix 5: Nuevo import para ListAdapter
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.orsanredcomercio.testandroidredcomercio.R;
 import com.orsanredcomercio.testandroidredcomercio.data.entity.QrScan;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;  // Fix 5: Nuevo import para equals null-safe en DiffUtil
+import java.util.Objects;
 
 public class ScanAdapter extends ListAdapter<QrScan, ScanAdapter.ViewHolder> {  // Fix 5: Cambiado a ListAdapter<QrScan, ViewHolder>
 
@@ -91,11 +89,10 @@ public class ScanAdapter extends ListAdapter<QrScan, ScanAdapter.ViewHolder> {  
 
         // Fix 5: Nuevo método bind (encapsula tu lógica de onBindViewHolder; chequea null)
         public void bind(QrScan scan) {
-            if (scan != null) {
-                contentText.setText("Contenido: " + scan.getContent());  // Usa getter estándar (sin cambios)
-                timeText.setText("Hora: " + scan.getFormattedTime());  // Requiere agregar este método en QrScan (ver nota)
+            if (scan != null) {  // + Corrección: Explícito para robustez
+                contentText.setText("Contenido: " + scan.getContent());
+                timeText.setText("Hora: " + scan.getFormattedTime());
             }
         }
     }
 }
-

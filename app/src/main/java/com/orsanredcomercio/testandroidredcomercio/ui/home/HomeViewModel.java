@@ -10,8 +10,6 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.orsanredcomercio.testandroidredcomercio.data.dao.QrScanDao;
-import com.orsanredcomercio.testandroidredcomercio.data.database.AppDatabase;
 import com.orsanredcomercio.testandroidredcomercio.data.repository.QrScanRepository;
 
 public class HomeViewModel extends AndroidViewModel { // Cambio a AndroidViewModel para acceso a Context

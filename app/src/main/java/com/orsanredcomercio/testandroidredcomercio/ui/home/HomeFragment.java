@@ -10,16 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
+import com.orsanredcomercio.testandroidredcomercio.R;
 import com.orsanredcomercio.testandroidredcomercio.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+
     // Construye la vista y el ViewModel
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,21 +29,24 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Observe existente: Texto descriptivo (sin cambios)
+        // Observe existente: Texto descriptivo
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
+        // Total dinámico (reactivo desde Room via getTotalScans())
         final TextView totalText = binding.totalText;
         homeViewModel.getTotalScans().observe(getViewLifecycleOwner(), count -> {
-            if (count != null && count > 0) {
-                // Estado con datos: Muestra el conteo (actualiza automáticamente al insertar QR)
-                totalText.setText("Total escaneos: " + count);
-            } else if (count != null) {
-                // Estado vacío: BD tiene 0 escaneos
-                totalText.setText("No hay escaneos aún. ¡Empieza a escanear!");
+            if (count != null) {
+                if (count > 0) {
+                    // + CORRECCIÓN: Usa string con formateo (centralizado, evita hardcode)
+                    totalText.setText(getString(R.string.total_scans, count));
+                } else {
+                    // + CORRECCIÓN: Reusa string de empty para consistencia (o usa no_scans específico)
+                    totalText.setText(getString(R.string.no_scans));
+                }
             } else {
-                // Estado cargando/error: Mientras Room query se ejecuta
-                totalText.setText("Cargando total de escaneos...");
+                // Estado inicial/cargando
+                totalText.setText(getString(R.string.loading_scans));
             }
         });
 
