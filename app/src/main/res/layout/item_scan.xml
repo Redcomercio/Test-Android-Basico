@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
 								   xmlns:app="http://schemas.android.com/apk/res-auto"
 								   android:layout_width="match_parent"
-								   android:layout_height="wrap_content"
+								   android:layout_height="wrap_content" xmlns:tools="http://schemas.android.com/tools"
 								   android:layout_margin="8dp"
 								   app:cardCornerRadius="8dp"
 								   app:cardElevation="4dp">
@@ -11,26 +11,29 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:padding="16dp">
+			android:padding="16dp"
+			android:layout_margin="8dp">
 
 		<TextView
 				android:id="@+id/content_text"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="Contenido del QR"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/qr_content_placeholder"
 		android:textSize="16sp"
 		android:textStyle="bold"
 		android:maxLines="2"
-		android:ellipsize="end" />
+		android:ellipsize="end"
+		tools:text="@string/qr_content_placeholder" />
 
 		<TextView
 				android:id="@+id/time_text"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="Hora: 14:30"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="4dp"
+				android:text="@string/qr_time_placeholder"
 		android:textSize="14sp"
 		android:textColor="#666666"
-		android:layout_marginTop="4dp" />
+		tools:text="@string/qr_time_placeholder" />
 
 	</LinearLayout>
 
