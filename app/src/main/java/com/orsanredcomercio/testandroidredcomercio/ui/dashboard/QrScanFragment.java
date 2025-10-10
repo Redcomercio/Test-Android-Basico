@@ -47,8 +47,6 @@ public class QrScanFragment extends Fragment {
         binding = FragmentQrScanBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         qrScanViewModel = new ViewModelProvider(this).get(QrScanViewModel.class);
-        final TextView textView = binding.textQr;
-        qrScanViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         previewView = binding.previewView;  // Binding maneja snake_case -> camelCase
         scanButton = binding.scanButton;
         scanButton.setOnClickListener(v -> {

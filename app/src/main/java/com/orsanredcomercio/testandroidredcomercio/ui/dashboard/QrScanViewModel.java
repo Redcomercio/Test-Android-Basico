@@ -20,11 +20,6 @@ public class QrScanViewModel extends AndroidViewModel {
     public QrScanViewModel(@NonNull Application application) {
         super(application);
         repository = new QrScanRepository(application);
-        text.setValue("Escanea un QR para registrar la visita");
-    }
-
-    public LiveData<String> getText() {
-        return text;
     }
 
     public void insert(QrScan qrScan) {

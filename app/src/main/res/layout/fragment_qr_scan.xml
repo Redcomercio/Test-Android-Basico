@@ -3,38 +3,31 @@
 												   xmlns:app="http://schemas.android.com/apk/res-auto"
 												   xmlns:tools="http://schemas.android.com/tools"
 												   android:layout_width="match_parent"
-												   android:layout_height="match_parent">
-
-	<TextView
-			android:id="@+id/text_qr"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="16dp"
-	android:text="@string/scan_title"
-	app:layout_constraintTop_toTopOf="parent"
-	app:layout_constraintStart_toStartOf="parent"
-	app:layout_constraintEnd_toEndOf="parent"
-	tools:text="Escanea un QR" />
+												   android:layout_height="match_parent"
+												   android:paddingTop="?attr/actionBarSize">
 
 	<androidx.camera.view.PreviewView
 			android:id="@+id/preview_view"
 			android:layout_width="0dp"
 			android:layout_height="0dp"
 			android:layout_marginStart="16dp"
-	android:layout_marginEnd="16dp"
-	app:layout_constraintTop_toBottomOf="@id/text_qr"
-	app:layout_constraintBottom_toTopOf="@id/scan_button"
-	app:layout_constraintStart_toStartOf="parent"
-	app:layout_constraintEnd_toEndOf="parent" />
+			android:layout_marginEnd="16dp"
+			android:layout_marginTop="16dp"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toTopOf="@id/scan_button"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			tools:text="Preview de cámara"/>
 
 	<Button
 			android:id="@+id/scan_button"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginBottom="16dp"
-	android:text="@string/start_scan"
-	app:layout_constraintBottom_toBottomOf="parent"
-	app:layout_constraintStart_toStartOf="parent"
-	app:layout_constraintEnd_toEndOf="parent"
-	tools:text="Iniciar Escaneo" />
+			android:text="@string/start_scan"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			tools:text="Iniciar Escaneo"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
