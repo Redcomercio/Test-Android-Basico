@@ -65,7 +65,6 @@ public class QrScanFragment extends Fragment {
             ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
         }
-        // Removido: Todo el setup de scanRecyclerView, ScanAdapter, y observer getAllScans() (redundancia con History)
         return root;
     }
 
@@ -113,9 +112,8 @@ public class QrScanFragment extends Fragment {
         cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis);
     }
 
-    // Convierte los frames de la camara en imágenes y analiza QR
     @SuppressLint("ExperimentalGetImage")
-    @ExperimentalGetImage  // Fix para warning experimental (opt-in requerido)
+    @ExperimentalGetImage
     private void processImageProxy(ImageProxy imageProxy) {
         if (imageProxy == null || imageProxy.getImage() == null) {
             imageProxy.close();
@@ -139,9 +137,9 @@ public class QrScanFragment extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // Fix 3: Agrega Toast para feedback solo si escaneando (evita spam en pausas)
                     if (isScanning) {
-                        Toast.makeText(requireContext(), "Error procesando imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(),
+                                "Error procesando imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                     // Maneja errores de ML Kit (e.g., QR inválido) - mantiene log para debug
                     e.printStackTrace();
@@ -150,7 +148,6 @@ public class QrScanFragment extends Fragment {
                         release -> imageProxy.close());
     }
 
-    // Guarda el contenido del QR en la BD
     // saveScan refactorizado: Usa ViewModel para insert asíncrono (integra Repository, elimina threading duplicado)
     private void saveScan(String content) {
         qrScanViewModel.insert(new QrScan(content));  // + LLAMA: ViewModel maneja async y errores
@@ -158,7 +155,6 @@ public class QrScanFragment extends Fragment {
         stopScan();
     }
 
-    // Controlan el flujo: start rebindea para reanudar análisis, stop libera cámara
     private void startScan() {
         if (cameraProvider != null && !isScanning) {
             bindCameraUseCases();

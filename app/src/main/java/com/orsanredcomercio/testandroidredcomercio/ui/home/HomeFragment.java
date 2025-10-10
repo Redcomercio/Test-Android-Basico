@@ -25,11 +25,9 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Observe existente: Texto descriptivo
         final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
@@ -38,10 +36,8 @@ public class HomeFragment extends Fragment {
         homeViewModel.getTotalScans().observe(getViewLifecycleOwner(), count -> {
             if (count != null) {
                 if (count > 0) {
-                    // + CORRECCIÓN: Usa string con formateo (centralizado, evita hardcode)
                     totalText.setText(getString(R.string.total_scans, count));
                 } else {
-                    // + CORRECCIÓN: Reusa string de empty para consistencia (o usa no_scans específico)
                     totalText.setText(getString(R.string.no_scans));
                 }
             } else {

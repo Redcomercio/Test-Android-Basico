@@ -22,14 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ScanAdapter extends ListAdapter<QrScan, ScanAdapter.ViewHolder> {  // Fix 5: Cambiado a ListAdapter<QrScan, ViewHolder>
-
-    // Fix 5: Constructor vacío (ListAdapter maneja lista internamente; pasa DiffUtil)
+public class ScanAdapter extends ListAdapter<QrScan, ScanAdapter.ViewHolder> {
     public ScanAdapter() {
         super(DIFF_CALLBACK);
     }
 
-    // Fix 5: Nuevo método submitList (reemplaza updateScans; maneja null como original)
     // Uso: adapter.submitList(newScans); desde Fragment/ViewModel
     public void submitList(List<QrScan> newScans) {
         super.submitList(newScans != null ? newScans : new ArrayList<>());
@@ -39,27 +36,25 @@ public class ScanAdapter extends ListAdapter<QrScan, ScanAdapter.ViewHolder> {  
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_scan, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_scan,
+                parent, false);
         return new ViewHolder(view);
     }
 
-    // Muestra el contenido de un elemento de la lista (Fix 5: Usa getItem() y bind())
+    // Muestra el contenido de un elemento de la lista
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        QrScan scan = getItem(position);  // Fix 5: getItem() de ListAdapter (eficiente, accede a current list)
-        holder.bind(scan);  // Fix 5: Llama bind para encapsular lógica (mantiene tu código)
+        QrScan scan = getItem(position);
+        holder.bind(scan);
     }
 
-    // Retorna la cantidad de elementos de la lista (Fix 5: Usa getCurrentList())
+    // Retorna la cantidad de elementos de la lista (Usa getCurrentList())
     @Override
     public int getItemCount() {
-        return getCurrentList().size();  // Fix 5: Automático y null-safe
+        return getCurrentList().size();  // Automático y null-safe
     }
 
-    // Fix 5: Removido updateScans (ya no necesario; usa submitList arriba)
-    // Fix 5: Removido private List<QrScan> scans; (ListAdapter lo maneja internamente)
-
-    // Fix 5: DiffUtil para comparar QrScan (calcula diffs eficientes por ID y contenido)
+    // DiffUtil para comparar QrScan (calcula diffs eficientes por ID y contenido)
     private static final DiffUtil.ItemCallback<QrScan> DIFF_CALLBACK = new DiffUtil.ItemCallback<QrScan>() {
         @Override
         public boolean areItemsTheSame(@NonNull QrScan oldItem, @NonNull QrScan newItem) {
@@ -72,24 +67,23 @@ public class ScanAdapter extends ListAdapter<QrScan, ScanAdapter.ViewHolder> {  
             // Contenidos iguales si campos clave coinciden (content y formattedTime)
             return Objects.equals(oldItem.getContent(), newItem.getContent()) &&  // Content del QR
                     Objects.equals(oldItem.getFormattedTime(), newItem.getFormattedTime());  // Hora formateada
-            // Opcional: Si QrScan overridea equals(), usa return oldItem.equals(newItem);
         }
     };
 
-    // Clase interna para almacenar los elementos de la lista (sin cambios mayores)
+    // Clase interna para almacenar los elementos de la lista
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView contentText, timeText;
 
-        // Constructor ViewHolder (sin cambios; ya tiene @NonNull implícito)
+        // Constructor ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             contentText = itemView.findViewById(R.id.content_text);  // Resuelve con XML
             timeText = itemView.findViewById(R.id.time_text);  // Resuelve con XML
         }
 
-        // Fix 5: Nuevo método bind (encapsula tu lógica de onBindViewHolder; chequea null)
+        // Eencapsula lógica de onBindViewHolder; chequea null
         public void bind(QrScan scan) {
-            if (scan != null) {  // + Corrección: Explícito para robustez
+            if (scan != null) {
                 contentText.setText("Contenido: " + scan.getContent());
                 timeText.setText("Hora: " + scan.getFormattedTime());
             }

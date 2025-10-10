@@ -15,7 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class QrScanRepository {
-    // Removido: TAG (no needed en producción; usa logger externo si debug)
     private final QrScanDao qrScanDao;
     private final ExecutorService executor = Executors.newFixedThreadPool(4);  // Thread pool para async
 
@@ -34,7 +33,6 @@ public class QrScanRepository {
 
     public void insert(QrScan qrScan) {
         executor.execute(() -> {
-            // Unificado: Removido try-catch/Log; deja que exceptions suban al caller (ViewModel maneja UI errors)
             // Si falla (e.g., BD locked), Room lanza SQLiteException – atrápalo en ViewModel para Toast
             qrScanDao.insert(qrScan);
         });

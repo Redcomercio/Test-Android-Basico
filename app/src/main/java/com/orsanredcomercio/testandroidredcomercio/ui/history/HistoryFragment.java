@@ -16,7 +16,7 @@ import com.orsanredcomercio.testandroidredcomercio.databinding.FragmentHistoryBi
 public class HistoryFragment extends Fragment {
 
     private FragmentHistoryBinding binding;
-    private ScanAdapter adapter;  // Cambio: ScanAdapter en lugar de HistoryAdapter
+    private ScanAdapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         HistoryViewModel historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
@@ -29,7 +29,6 @@ public class HistoryFragment extends Fragment {
 
         historyViewModel.getAllScans().observe(getViewLifecycleOwner(), scans -> {
             final TextView emptyText = binding.emptyText;
-            // + Corrección: Chequeo explícito para null (Room puede emitir null inicial)
             if (scans == null || scans.isEmpty()) {
                 emptyText.setText(getString(R.string.empty_history));
                 emptyText.setVisibility(View.VISIBLE);

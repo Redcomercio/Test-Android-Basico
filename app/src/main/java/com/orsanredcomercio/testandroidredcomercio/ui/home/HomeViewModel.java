@@ -12,21 +12,22 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.orsanredcomercio.testandroidredcomercio.data.repository.QrScanRepository;
 
-public class HomeViewModel extends AndroidViewModel { // Cambio a AndroidViewModel para acceso a Context
+public class HomeViewModel extends AndroidViewModel {
     private final QrScanRepository repository;
     private LiveData<Integer> totalScans;
     private final MutableLiveData<String> text = new MutableLiveData<>();
-    // El constructor se llama al crear el ViewModel (en el Fragment)
+
     public HomeViewModel(Application application) {
         super(application);
         repository = new QrScanRepository(application);
         totalScans = repository.getTotalScans();
         text.setValue("Total de visitas registradas");
     }
-    // Puente para la UI
+
     public LiveData<Integer> getTotalScans() {
         return totalScans;
     }
+
     public LiveData<String> getText() {
         return text;
     }
