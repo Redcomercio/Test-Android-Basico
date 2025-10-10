@@ -52,13 +52,7 @@ public class QrScan {
         this.timestamp = timestamp;
     }
 
-    // Metodos para formatear la fecha y hora
-    public String getFormattedDate() {
-        if (timestamp == 0) return "Sin fecha";  // Mejora: Chequeo consistente
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date(timestamp));
-    }
-
+    // Método para formatear la fecha y hora
     public String getFormattedTime() {
         if (timestamp == 0) return "Sin hora";
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());

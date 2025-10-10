@@ -1,17 +1,18 @@
 pluginManagement {
     repositories {
-        google()
+        google()  // + Centralizado: Repos para plugins (AGP, etc.)
         mavenCentral()
         gradlePluginPortal()
     }
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+
+dependencyResolutionManagement {  // + FIX PRINCIPAL: Centraliza repos para dependencias (resuelve conflicto)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)  // Fuerza uso de settings (evita build.gradle agregar)
     repositories {
-        google()
-        mavenCentral()
+        google()  // Para androidx, Google libs (Room, CameraX, ML Kit)
+        mavenCentral()  // Para JUnit, etc.
     }
 }
 
-rootProject.name = "TestAndroidRedcomercio"
+rootProject.name = "TestAndroidRedcomercio"  // Nombre del proyecto
 include ':app'
