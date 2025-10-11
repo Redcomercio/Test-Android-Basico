@@ -1,21 +1,22 @@
+/**
+ * Actúa como contenedor de la vista principal de usuario.
+ */
 package com.orsanredcomercio.testandroidredcomercio;
 
 import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.orsanredcomercio.testandroidredcomercio.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-
+    // Referencia a la vista principal de usuario
     private ActivityMainBinding binding;
 
+    // Método que se ejecuta al crear la actividad
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,5 +34,4 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
-
 }
